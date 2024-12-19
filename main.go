@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math"
 	"runtime"
 
 	"github.com/go-gl/gl/v2.1/gl"
@@ -9,10 +11,6 @@ import (
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 )
-
-type Coordinate struct {
-	X, Y float64
-}
 
 var (
 	isMouseHeld    bool = false
@@ -70,7 +68,7 @@ func main() {
 	glfw.SwapInterval(1)
 	gl.Enable(gl.MULTISAMPLE)
 
-	// blending
+	// ---BLENDING---
 	gl.Enable(gl.BLEND)
 	// the destination is what's already on your "canvas" (the framebuffer), and the source is what you're about to draw
 	gl.BlendEquation(gl.FUNC_SUBTRACT) // source - destination
@@ -81,7 +79,7 @@ func main() {
 		log.Fatalf("Error loading canvas GL assets: %v", err)
 	}
 
-	// callbacks
+	// ---CALLBACKS---
 
 	// when cursor moves - update active location
 	window.SetCursorPosCallback(func(w *glfw.Window, xpos, ypos float64) {
@@ -112,6 +110,12 @@ func main() {
 				activeLoc.X, activeLoc.Y = window.GetCursorPos()
 				activeLoc.scale()
 
+				// print width, height of rectangle
+				fmt.Println(math.Abs(activeLoc.X-initLoc.X), math.Abs(activeLoc.Y-initLoc.Y))
+
+				// send locations to image processing
+				ReadImage(initLoc, activeLoc)
+
 			}
 		}
 
@@ -127,6 +131,7 @@ func main() {
 	// initialize canvas with zero size, since size is set in main loop
 	cv := canvas.New(backend)
 
+	// runs every frame
 	for !window.ShouldClose() {
 		window.MakeContextCurrent()
 
@@ -150,7 +155,7 @@ func main() {
 }
 
 func run(cv *canvas.Canvas, w, h float64) {
-	cv.ClearRect(0, 0, w, h) // 'refreshes' canvas
+	cv.ClearRect(0, 0, w, h) // 'refreshes' canvas, clears back buffer
 
 	// semi-transparent background
 	cv.SetFillStyle(20, 22, 22, 0.7)
