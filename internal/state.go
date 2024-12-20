@@ -13,7 +13,7 @@ type State struct {
 	Sy float64
 }
 
-// TODO: Remove this method. Move scaling logic to SetInitLoc() and SetActiveLoc() so that coordinates are always scaled properly.
+// TODO: #6 Remove this method. Move scaling logic to SetInitLoc() and SetActiveLoc() so that coordinates are always scaled properly.
 func (coord *Coordinate) scale(state *State) {
 	coord.X *= state.Sx
 	coord.Y *= state.Sy

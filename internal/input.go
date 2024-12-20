@@ -7,7 +7,7 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-// TODO: Remove global variables. Decide if should put in state or else where.
+// TODO: #3 Remove global variables. Decide if should put in state or else where.
 var (
 	isMouseHeld    bool
 	isMouseRelease bool
@@ -31,7 +31,7 @@ func SetUpCallbacks(state *State, window *glfw.Window) {
 	})
 }
 
-// TODO: Clean up callback functions. Consider making them method receivers on state.
+// TODO: #4 Clean up callback functions. Consider making them method receivers on state.
 func mouseButtonCallback(w *glfw.Window, button glfw.MouseButton, action glfw.Action, state *State) {
 	if button == glfw.MouseButton1 {
 		isMouseHeld = (action == glfw.Press)

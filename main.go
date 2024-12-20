@@ -1,6 +1,6 @@
 package main
 
-// TODO: Remove wildcard import for internal package.
+// TODO: #1 Remove wildcard import for internal package.
 import (
 	"log"
 	. "screen2text/internal"
@@ -23,7 +23,7 @@ func main() {
 	for !win.ShouldClose() {
 		win.MakeContextCurrent()
 
-		// TODO: Move to window size and scaling logic to renderer.go.
+		// TODO: #2 Move to window size and scaling logic to renderer.go.
 		ww, wh := win.GetSize()
 		fbw, fbh := win.GetFramebufferSize()
 		appState.Sx = float64(fbw) / float64(ww)

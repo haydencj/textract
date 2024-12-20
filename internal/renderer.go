@@ -2,7 +2,7 @@ package internal
 
 import "github.com/tfriedel6/canvas"
 
-// TODO: Maybe break Run into separate drawing functions.
+// TODO: #5 Consider breaking Run into separate drawing functions.
 func Run(cv *canvas.Canvas, w, h float64, state *State) {
 	dynamicHeight := state.activeLoc.Y - state.initLoc.Y
 	dynamicWidth := state.activeLoc.X - state.initLoc.X
