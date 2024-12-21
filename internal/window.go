@@ -32,12 +32,14 @@ func Init() (*glfw.Window, *goglbackend.GoGLBackend, *canvas.Canvas) {
 	glfw.WindowHint(glfw.Decorated, glfw.False)             // does window info (close button) exist
 	glfw.WindowHint(glfw.Floating, glfw.True)               // topmost window
 	glfw.WindowHint(glfw.Resizable, glfw.False)             // is window resizable
+	glfw.WindowHint(glfw.Maximized, glfw.True)
 
 	window, err := glfw.CreateWindow(vidMode.Width, vidMode.Height, "screen2text", nil, nil)
 	if err != nil { // window creation failed
 		log.Fatalln("failed to create window:", err)
 	}
 
+	window.SetPos(0, 0)
 	window.MakeContextCurrent() // changing openGL's state -> changing current context state. one context per thread
 
 	backend := setUpGL()

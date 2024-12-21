@@ -54,6 +54,8 @@ func mouseButtonCallback(w *glfw.Window, button glfw.MouseButton, action glfw.Ac
 			// print width, height of rectangle
 			fmt.Println(math.Abs(state.activeLoc.X-state.initLoc.X), math.Abs(state.activeLoc.Y-state.initLoc.Y))
 
+			ReadImage(state)
+
 		}
 	}
 }
