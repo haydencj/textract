@@ -19,6 +19,9 @@ func main() {
 	win, backend, cv := Init()
 	SetUpCallbacks(&appState, win)
 
+	// initialize clipboard backpage
+	InitClipboard()
+
 	// runs every frame
 	for !win.ShouldClose() {
 		win.MakeContextCurrent()

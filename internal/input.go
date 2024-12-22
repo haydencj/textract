@@ -26,9 +26,10 @@ func SetUpCallbacks(state *State, window *glfw.Window) {
 		cursorPosCallback(xpos, ypos, state)
 	})
 
-	// user can close window via escape key
+	// user can close window via escape key and copy image with cmd/ctrl + c
 	window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-		keyCallback(w, key, action)
+		escapeKeyCallback(w, key, action)
+		copyCallback(key, action, mods, state)
 	})
 }
 
@@ -84,9 +85,15 @@ func cursorPosCallback(xpos, ypos float64, s *State) {
 	}
 }
 
-func keyCallback(w *glfw.Window, key glfw.Key, action glfw.Action) {
+func escapeKeyCallback(w *glfw.Window, key glfw.Key, action glfw.Action) {
 	if key == glfw.KeyEscape && action == glfw.Press {
 		w.SetShouldClose(true)
+	}
+}
+
+func copyCallback(key glfw.Key, action glfw.Action, mods glfw.ModifierKey, s *State) {
+	if key == glfw.KeyC && (mods == glfw.ModControl || mods == glfw.ModSuper) && action == glfw.Press {
+		Copy(s)
 	}
 }
 

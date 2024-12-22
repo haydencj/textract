@@ -2,9 +2,7 @@ package internal
 
 import (
 	"bufio"
-	"bytes"
-	"fmt"
-	"image/jpeg"
+	"image/png"
 	"log"
 	"os"
 
@@ -20,11 +18,15 @@ func ReadImage(s *State) {
 	width := abs(activeLoc.X - initLoc.X)
 	height := abs(activeLoc.Y - initLoc.Y)
 
-	fmt.Println("image wh:", width, height)
+	log.Println("image wh:", width, height)
 
 	//TODO: #7 Fix image capture offset
 	// use robot go to capture screen
 	imageBitmap := robotgo.CaptureScreen(initLoc.X, initLoc.Y, width, height)
+	if imageBitmap == nil {
+		log.Println("Invalid image. Skipping screen capture.")
+		return
+	}
 	defer robotgo.FreeBitmap(imageBitmap)
 
 	log.Println(imageBitmap)
@@ -32,9 +34,8 @@ func ReadImage(s *State) {
 	// save image?
 	image := robotgo.ToImage(imageBitmap)
 
-	// encode to jpeg
-	var imageBuf bytes.Buffer
-	err := jpeg.Encode(&imageBuf, image, nil)
+	// encode to png
+	err := png.Encode(&s.imageBuffer, image)
 	if err != nil {
 		log.Fatalln("Image encoding failed:", err)
 	}
@@ -45,9 +46,11 @@ func ReadImage(s *State) {
 		panic(err)
 	}
 
+	log.Println(file)
+
 	fw := bufio.NewWriter(file)
 
-	_, err = fw.Write(imageBuf.Bytes())
+	_, err = fw.Write(s.imageBuffer.Bytes())
 	if err != nil {
 		panic(err)
 	}
