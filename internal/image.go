@@ -3,9 +3,9 @@ package internal
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"image/jpeg"
 	"log"
-	"math"
 	"os"
 
 	"github.com/go-vgo/robotgo"
@@ -13,14 +13,21 @@ import (
 
 // image processing
 
-func ReadImage(state *State) {
-	width := int32(math.Abs(state.activeLoc.X - state.initLoc.X))
-	height := int32(math.Abs(state.activeLoc.Y - state.initLoc.Y))
+func ReadImage(s *State) {
+	activeLoc := s.SystemMouse.activeLoc
+	initLoc := s.SystemMouse.initLoc
+
+	width := abs(activeLoc.X - initLoc.X)
+	height := abs(activeLoc.Y - initLoc.Y)
+
+	fmt.Println("image wh:", width, height)
 
 	//TODO: #7 Fix image capture offset
 	// use robot go to capture screen
-	imageBitmap := robotgo.CaptureScreen(int(state.initLoc.X), int(state.initLoc.Y), int(width), int(height))
+	imageBitmap := robotgo.CaptureScreen(initLoc.X, initLoc.Y, width, height)
 	defer robotgo.FreeBitmap(imageBitmap)
+
+	log.Println(imageBitmap)
 
 	// save image?
 	image := robotgo.ToImage(imageBitmap)
@@ -33,12 +40,22 @@ func ReadImage(state *State) {
 	}
 
 	// write to file
-	file, err := os.Create("img.jpg")
+	file, err := os.Create("img.jpeg")
 	if err != nil {
 		panic(err)
 	}
+
 	fw := bufio.NewWriter(file)
 
-	fw.Write(imageBuf.Bytes())
+	_, err = fw.Write(imageBuf.Bytes())
+	if err != nil {
+		panic(err)
+	}
+}
 
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
