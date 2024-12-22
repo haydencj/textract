@@ -18,7 +18,7 @@ func ReadImage(s *State) {
 	width := abs(activeLoc.X - initLoc.X)
 	height := abs(activeLoc.Y - initLoc.Y)
 
-	log.Println("image wh:", width, height)
+	log.Println("image size:", width, height)
 
 	//TODO: #7 Fix image capture offset
 	// use robot go to capture screen
@@ -41,16 +41,19 @@ func ReadImage(s *State) {
 	}
 
 	// write to file
-	file, err := os.Create("img.jpeg")
+	file, err := os.Create("img.png")
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println(file)
-
 	fw := bufio.NewWriter(file)
 
 	_, err = fw.Write(s.imageBuffer.Bytes())
+	if err != nil {
+		panic(err)
+	}
+
+	err = fw.Flush() // writes data from buffer to file
 	if err != nil {
 		panic(err)
 	}
