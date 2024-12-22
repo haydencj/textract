@@ -22,7 +22,7 @@ func ReadImage(s *State) {
 
 	//TODO: #7 Fix image capture offset
 	// use robot go to capture screen
-	imageBitmap := robotgo.CaptureScreen(initLoc.X, initLoc.Y, width, height)
+	imageBitmap := robotgo.CaptureScreen(initLoc.X+1, initLoc.Y+1, width-1, height-1)
 	if imageBitmap == nil {
 		log.Println("Invalid image. Skipping screen capture.")
 		return
