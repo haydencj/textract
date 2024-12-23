@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"log"
 	"os"
+	"time"
 
 	"github.com/go-vgo/robotgo"
 	"github.com/otiai10/gosseract/v2"
@@ -59,6 +60,8 @@ func ReadImage(s *State) {
 }
 
 func Ocr(s *State) (string, error) {
+	start := time.Now()
+
 	client := gosseract.NewClient()
 	defer client.Close()
 	client.SetImageFromBytes(s.imageBuffer.Bytes())
@@ -68,7 +71,10 @@ func Ocr(s *State) (string, error) {
 
 	}
 
+	end := time.Now()
 	log.Println("extracted text:", text)
+	log.Println("elapsed ocr time:", end.Sub(start))
+
 	return text, nil
 }
 
