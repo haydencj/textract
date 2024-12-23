@@ -17,7 +17,12 @@ func InitClipboard() {
 func Copy(s *State) {
 	if s.imageBuffer.Len() != 0 {
 
-		clipboard.Write(clipboard.FmtImage, s.imageBuffer.Bytes())
+		//clipboard.Write(clipboard.FmtImage, s.imageBuffer.Bytes())
+		extracted_text, err := Ocr(s)
+		if err != nil {
+			return
+		}
+		clipboard.Write(clipboard.FmtText, []byte(extracted_text))
 
 	} else {
 		log.Println("Image buffer empty. Skipping clipboard copy.")

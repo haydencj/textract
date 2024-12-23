@@ -2,11 +2,13 @@ package internal
 
 import (
 	"bufio"
+	"fmt"
 	"image/png"
 	"log"
 	"os"
 
 	"github.com/go-vgo/robotgo"
+	"github.com/otiai10/gosseract/v2"
 )
 
 // image processing
@@ -20,7 +22,6 @@ func ReadImage(s *State) {
 
 	log.Println("image size:", width, height)
 
-	//TODO: #7 Fix image capture offset
 	// use robot go to capture screen
 	imageBitmap := robotgo.CaptureScreen(initLoc.X+1, initLoc.Y+1, width-1, height-1)
 	if imageBitmap == nil {
@@ -28,8 +29,6 @@ func ReadImage(s *State) {
 		return
 	}
 	defer robotgo.FreeBitmap(imageBitmap)
-
-	log.Println(imageBitmap)
 
 	// save image?
 	image := robotgo.ToImage(imageBitmap)
@@ -57,6 +56,20 @@ func ReadImage(s *State) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func Ocr(s *State) (string, error) {
+	client := gosseract.NewClient()
+	defer client.Close()
+	client.SetImageFromBytes(s.imageBuffer.Bytes())
+	text, err := client.Text()
+	if err != nil {
+		return "", fmt.Errorf("unable to convert file: %v", err)
+
+	}
+
+	log.Println("extracted text:", text)
+	return text, nil
 }
 
 func abs(x int) int {

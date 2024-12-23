@@ -70,8 +70,8 @@ func mouseButtonCallback(w *glfw.Window, button glfw.MouseButton, action glfw.Ac
 			s.SystemMouse.setLocation(&s.SystemMouse.activeLoc, newSysCoord)
 
 			// print width, height of rectangle
-			log.Println(math.Abs(s.GLMouse.activeLoc.X-s.GLMouse.initLoc.X), math.Abs(s.GLMouse.activeLoc.Y-s.GLMouse.initLoc.Y))
-			log.Println(s.SystemMouse.activeLoc.X-s.SystemMouse.initLoc.X, s.SystemMouse.activeLoc.Y-s.SystemMouse.initLoc.Y)
+			log.Println("opengl rect:", math.Abs(s.GLMouse.activeLoc.X-s.GLMouse.initLoc.X), math.Abs(s.GLMouse.activeLoc.Y-s.GLMouse.initLoc.Y))
+			log.Println("system rect:", s.SystemMouse.activeLoc.X-s.SystemMouse.initLoc.X, s.SystemMouse.activeLoc.Y-s.SystemMouse.initLoc.Y)
 
 			ReadImage(s)
 
