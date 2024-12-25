@@ -24,6 +24,12 @@ func Init() (*glfw.Window, *goglbackend.GoGLBackend, *canvas.Canvas) {
 	monitor := glfw.GetPrimaryMonitor()
 	vidMode := monitor.GetVideoMode()
 
+	// for windows fullscreen
+	glfw.WindowHint(glfw.RedBits, vidMode.RedBits)
+	glfw.WindowHint(glfw.GreenBits, vidMode.GreenBits)
+	glfw.WindowHint(glfw.BlueBits, vidMode.BlueBits)
+	glfw.WindowHint(glfw.RefreshRate, vidMode.RefreshRate)
+
 	// the stencil size setting is required for the canvas to work
 	glfw.WindowHint(glfw.StencilBits, 8)
 	glfw.WindowHint(glfw.DepthBits, 0)
