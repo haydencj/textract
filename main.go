@@ -16,33 +16,7 @@ func main() {
 		glfw.Terminate()
 	}
 
-	systray.Run(onReady, onExit)
-}
-
-func onReady() {
-
-	// Set up the tray icon
-	//systray.SetIcon(getIcon()) // Replace this with your custom icon if you have one
-	systray.SetTitle("Textract")
-	systray.SetTooltip("Text Extraction Tool")
-
-	// Add menu items
-	startSelection := systray.AddMenuItem("Start Selection", "Activate the selection overlay")
-	quit := systray.AddMenuItem("Quit", "Quit the application")
-
-	// Handle menu item clicks
-	go func() {
-		for {
-			select {
-			case <-startSelection.ClickedCh:
-				fmt.Println("Start Selection clicked!")
-				// Call your selection overlay function here
-			case <-quit.ClickedCh:
-				fmt.Println("Quit clicked!")
-				systray.Quit()
-			}
-		}
-	}()
+	systray.Register(onReady, onExit)
 
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to initialize glfw:", err)
@@ -97,4 +71,29 @@ func onReady() {
 			glfw.PollEvents()
 		}
 	}
+}
+
+func onReady() {
+	// Set up the tray icon
+	//systray.SetIcon(getIcon()) // Replace this with your custom icon if you have one
+	systray.SetTitle("Textract")
+	systray.SetTooltip("Text Extraction Tool")
+
+	// Add menu items
+	startSelection := systray.AddMenuItem("Start Selection", "Activate the selection overlay")
+	quit := systray.AddMenuItem("Quit", "Quit the application")
+
+	// Handle menu item clicks
+	go func() {
+		for {
+			select {
+			case <-startSelection.ClickedCh:
+				fmt.Println("Start Selection clicked!")
+				// Call your selection overlay function here
+			case <-quit.ClickedCh:
+				fmt.Println("Quit clicked!")
+				systray.Quit()
+			}
+		}
+	}()
 }

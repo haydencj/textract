@@ -2,3 +2,4 @@
 *.jpg
 *.png
 *.txt
+!icon/textract-transparent.png

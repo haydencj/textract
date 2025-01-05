@@ -1,6 +1,18 @@
 package internal
 
-import "bytes"
+import (
+	"bytes"
+
+	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/tfriedel6/canvas"
+	"github.com/tfriedel6/canvas/backend/goglbackend"
+)
+
+type Backend struct {
+	Win     *glfw.Window
+	Backend *goglbackend.GoGLBackend
+	Cv      *canvas.Canvas
+}
 
 // Coordinate represents a point in a coordinate system
 type Coordinate[T float64 | int] struct {
