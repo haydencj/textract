@@ -1,4 +1,4 @@
-package internal
+package app
 
 import (
 	"bytes"
@@ -23,6 +23,10 @@ type Coordinate[T float64 | int] struct {
 type Mouse[T float64 | int] struct {
 	initLoc   Coordinate[T]
 	activeLoc Coordinate[T]
+}
+
+type Win struct {
+	win *glfw.Window
 }
 
 // holds all application state

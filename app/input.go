@@ -1,4 +1,4 @@
-package internal
+package app
 
 import (
 	"log"
@@ -14,20 +14,20 @@ var (
 	isMouseRelease bool
 )
 
-func SetUpCallbacks(state *State, window *glfw.Window) {
+func (w *Win) SetUpCallbacks(state *State) {
 
 	// define behavior when mouse is pressed and released
-	window.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
+	w.win.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
 		mouseButtonCallback(w, button, action, state)
 	})
 
 	// when cursor moves - update active location
-	window.SetCursorPosCallback(func(w *glfw.Window, xpos, ypos float64) {
+	w.win.SetCursorPosCallback(func(w *glfw.Window, xpos, ypos float64) {
 		cursorPosCallback(xpos, ypos, state)
 	})
 
 	// user can close window via escape key and copy image with cmd/ctrl + c
-	window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	w.win.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 		escapeKeyCallback(w, key, action)
 		copyCallback(key, action, mods, state)
 	})
