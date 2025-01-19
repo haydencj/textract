@@ -8,28 +8,30 @@ import (
 
 // Run runs the given window and blocks until it is destroyed.
 func (w *Win) Run() {
-	w.win.MakeContextCurrent()
+	for !w.win.ShouldClose() {
 
-	// Only run selection logic when active
-	// TODO: #2 Move to window size and scaling logic to renderer.go.
-	ww, wh := w.win.GetSize()
-	fbw, fbh := w.win.GetFramebufferSize()
-	appState.Sx = float64(fbw) / float64(ww)
-	appState.Sy = float64(fbh) / float64(wh)
+		w.win.MakeContextCurrent()
 
-	// set canvas size
-	backend.SetBounds(0, 0, fbw, fbh)
+		// Only run selection logic when active
+		// TODO: #2 Move to window size and scaling logic to renderer.go.
+		ww, wh := w.win.GetSize()
+		fbw, fbh := w.win.GetFramebufferSize()
+		w.state.Sx = float64(fbw) / float64(ww)
+		w.state.Sy = float64(fbh) / float64(wh)
 
-	// call the run function to do all the drawing
-	Draw(cv, float64(fbw), float64(fbh), &appState)
+		// set canvas size
+		w.backend.SetBounds(0, 0, fbw, fbh)
 
-	// swap back and front buffer
-	w.win.SwapBuffers()
-	mainthread.Call(func() {
-		// This function must be called from the main thread.
-		glfw.PollEvents()
-	})
+		// call the run function to do all the drawing
+		Draw(w.cv, float64(fbw), float64(fbh), w.state)
 
+		// swap back and front buffer
+		w.win.SwapBuffers()
+		mainthread.Call(func() {
+			// This function must be called from the main thread.
+			glfw.PollEvents()
+		})
+	}
 	// This function must be called from the mainthread.
 	mainthread.Call(w.win.Destroy)
 }

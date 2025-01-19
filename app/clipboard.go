@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 
 	"golang.design/x/clipboard"
@@ -12,6 +13,9 @@ func InitClipboard() {
 	if err != nil {
 		log.Fatalln("Clipboard package not ready for use:", err)
 	}
+
+	fmt.Println("Clipboard initialized.")
+
 }
 
 func Copy(s *State) {

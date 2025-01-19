@@ -14,7 +14,8 @@ var (
 	isMouseRelease bool
 )
 
-func (w *Win) SetUpCallbacks(state *State) {
+func (w *Win) SetUpCallbacks() {
+	state := w.state
 
 	// define behavior when mouse is pressed and released
 	w.win.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {

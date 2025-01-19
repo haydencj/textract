@@ -27,6 +27,7 @@ var iconData []byte
 
 func Init() (err error) {
 	mainthread.Call(func() { err = glfw.Init() })
+	//mainthread.Call(func() { systray.Run(onReady, onExit) })
 	return
 }
 
@@ -42,12 +43,11 @@ func fn() {
 	}
 	defer Terminate()
 
-	backend, cv := SetUpGL()
+	window, err := NewWindow()
+	if err != nil {
+		panic(err)
+	}
 
-	// initialize state, window, gl backend and callbacks
-	appState := State{Sx: 1, Sy: 1}
-
-	// initialize clipboard packpage
 	InitClipboard()
 
 	// Start systray
@@ -69,6 +69,7 @@ func fn() {
 	// defer hook.End()
 
 	// runs every frame
+	window.Run()
 
 }
 
@@ -105,5 +106,6 @@ func onExit() {
 }
 
 func Terminate() {
+	fmt.Println("Terminating...")
 	mainthread.Call(glfw.Terminate)
 }

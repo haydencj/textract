@@ -8,12 +8,6 @@ import (
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 )
 
-type Backend struct {
-	Win     *glfw.Window
-	Backend *goglbackend.GoGLBackend
-	Cv      *canvas.Canvas
-}
-
 // Coordinate represents a point in a coordinate system
 type Coordinate[T float64 | int] struct {
 	X, Y T
@@ -26,7 +20,10 @@ type Mouse[T float64 | int] struct {
 }
 
 type Win struct {
-	win *glfw.Window
+	win     *glfw.Window
+	state   *State
+	backend *goglbackend.GoGLBackend
+	cv      *canvas.Canvas
 }
 
 // holds all application state

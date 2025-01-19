@@ -1,7 +1,7 @@
 package app
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -15,6 +15,10 @@ func NewWindow() (*Win, error) {
 		w   = &Win{}
 		err error
 	)
+
+	// initialize state
+	w.state = &State{Sx: 1, Sy: 1}
+
 	// get monitor info
 	monitor := glfw.GetPrimaryMonitor()
 	vidMode := monitor.GetVideoMode()
@@ -25,7 +29,7 @@ func NewWindow() (*Win, error) {
 		w.win, err = glfw.CreateWindow(vidMode.Width, vidMode.Height,
 			"screen2text", nil, nil)
 		if err != nil { // window creation failed
-			log.Fatalln("failed to create window:", err)
+			return
 		}
 	})
 	if err != nil {
@@ -33,22 +37,29 @@ func NewWindow() (*Win, error) {
 	}
 
 	mainthread.Call(func() { w.win.SetPos(0, 0) })
-	w.win.MakeContextCurrent() // changing openGL's state -> changing current context state. one context per thread
+	w.win.MakeContextCurrent()
 
+	// initialize OpenGL backend and canvas
+	err = w.InitGLBackend()
+	if err != nil {
+		return nil, err
+	}
+
+	// Set up callbacks
 	w.SetUpCallbacks()
 
 	return w, nil
 }
 
 // Initialize OpenGL Go bindings and configure OpenGL settings
-func SetUpGL() (*goglbackend.GoGLBackend, *canvas.Canvas) {
+func (w *Win) InitGLBackend() error {
 	err := gl.Init()
 	if err != nil {
-		log.Fatalln("failed to initialize GL:", err)
+		return err
 	}
 
 	// set vsync on, enable multisample (if available) (OPTIONAL???)
-	glfw.SwapInterval(1)
+	// glfw.SwapInterval(1)
 	gl.Enable(gl.MULTISAMPLE)
 
 	// --- BLENDING ---
@@ -59,11 +70,16 @@ func SetUpGL() (*goglbackend.GoGLBackend, *canvas.Canvas) {
 	// load GL backend
 	backend, err := goglbackend.New(0, 0, 0, 0, nil)
 	if err != nil {
-		log.Fatalln("error loading canvas GL assets:", err)
+		return err
 	}
 
 	cv := canvas.New(backend)
-	return backend, cv
+
+	w.backend = backend
+	w.cv = cv
+
+	fmt.Println("GL backend initialized.")
+	return nil
 }
 
 func setWindowHints(vidMode *glfw.VidMode) {
