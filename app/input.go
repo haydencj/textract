@@ -1,8 +1,11 @@
 package app
 
 import (
+	"fmt"
 	"log"
 	"math"
+
+	hook "github.com/robotn/gohook"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-vgo/robotgo"
@@ -13,6 +16,25 @@ var (
 	isMouseHeld    bool
 	isMouseRelease bool
 )
+
+func RegisterHotkey() chan struct{} {
+	// channel to signal hotkey event
+	hotkeyChan := make(chan struct{})
+
+	// global keyboard event listener
+	hook.Register(hook.KeyDown, []string{"c", "ctrl", "shift"}, func(e hook.Event) {
+		hotkeyChan <- struct{}{}
+	})
+
+	// start hook
+	go func() {
+		s := hook.Start()
+		<-hook.Process(s)
+	}()
+
+	fmt.Println("hotkey registered")
+	return hotkeyChan
+}
 
 func (w *Win) SetUpCallbacks() {
 	state := w.state

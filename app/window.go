@@ -2,13 +2,17 @@ package app
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
-	"golang.design/x/mainthread"
 )
+
+func init() {
+	runtime.LockOSThread()
+}
 
 func NewWindow() (*Win, error) {
 	var (
@@ -16,6 +20,7 @@ func NewWindow() (*Win, error) {
 		err error
 	)
 
+	fmt.Println("Begin window creation.")
 	// initialize state
 	w.state = &State{Sx: 1, Sy: 1}
 
@@ -23,20 +28,23 @@ func NewWindow() (*Win, error) {
 	monitor := glfw.GetPrimaryMonitor()
 	vidMode := monitor.GetVideoMode()
 
-	mainthread.Call(func() { setWindowHints(vidMode) })
-
-	mainthread.Call(func() {
-		w.win, err = glfw.CreateWindow(vidMode.Width, vidMode.Height,
-			"screen2text", nil, nil)
-		if err != nil { // window creation failed
-			return
-		}
-	})
+	//mainthread.Call(func() { setWindowHints(vidMode) })
+	setWindowHints(vidMode)
+	// mainthread.Call(func() {
+	// 	w.win, err = glfw.CreateWindow(vidMode.Width, vidMode.Height,
+	// 		"screen2text", nil, nil)
+	// 	if err != nil { // window creation failed
+	// 		return
+	// 	}
+	// })
+	w.win, err = glfw.CreateWindow(vidMode.Width, vidMode.Height,
+		"screen2text", nil, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	mainthread.Call(func() { w.win.SetPos(0, 0) })
+	// mainthread.Call(func() { w.win.SetPos(0, 0) })
+	w.win.SetPos(0, 0)
 	w.win.MakeContextCurrent()
 
 	// initialize OpenGL backend and canvas
@@ -48,6 +56,7 @@ func NewWindow() (*Win, error) {
 	// Set up callbacks
 	w.SetUpCallbacks()
 
+	fmt.Println("New window created.")
 	return w, nil
 }
 

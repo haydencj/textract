@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas"
-	"golang.design/x/mainthread"
 )
 
 // Run runs the given window and blocks until it is destroyed.
@@ -27,13 +26,15 @@ func (w *Win) Run() {
 
 		// swap back and front buffer
 		w.win.SwapBuffers()
-		mainthread.Call(func() {
-			// This function must be called from the main thread.
-			glfw.PollEvents()
-		})
+		// mainthread.Call(func() {
+		// 	// This function must be called from the main thread.
+		// 	glfw.PollEvents()
+		// })
+		glfw.PollEvents()
 	}
 	// This function must be called from the mainthread.
-	mainthread.Call(w.win.Destroy)
+	// mainthread.Call(w.win.Destroy)
+	w.win.Destroy()
 }
 
 // TODO: #5 Consider breaking Run into separate drawing functions.
