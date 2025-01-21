@@ -5,23 +5,30 @@ import (
 	"log"
 
 	"github.com/energye/systray"
-	//"github.com/getlantern/systray"
+	"golang.design/x/mainthread"
 )
 
-func SwitchUI() {
-	//fmt.Println("Quitting Systray...")
+func StartSelection() {
+	var (
+		win *Win
+		err error
+	)
 
 	fmt.Println("Running OpenGL Selection...")
-	window, err := NewWindow()
+
+	// Schedule the window creation on the main thread:
+	mainthread.Call(func() {
+		win, err = NewWindow()
+	})
+
 	if err != nil {
 		log.Fatalln("Failed to create OpenGL window:", err)
 	}
 
 	// Run the OpenGL selection
-	window.Run()
+	mainthread.Call(func() { win.Run() })
 
-	fmt.Println("OpenGL Selection complete. Restarting Systray...")
-	//StartSystray()
+	fmt.Println("OpenGL Selection complete.")
 }
 
 func StartSystray() (func(), func()) {
@@ -32,10 +39,7 @@ func StartSystray() (func(), func()) {
 
 	fmt.Println("About to run systray...")
 
-	// mainthread.Call(func() { startTray, endTray = systray.RunWithExternalLoop(OnReady, OnExit) })
-	startTray, endTray = systray.RunWithExternalLoop(OnReady, OnExit)
-
-	fmt.Println("mainthread.Call returned!") // <-- And this
+	mainthread.Call(func() { startTray, endTray = systray.RunWithExternalLoop(OnReady, OnExit) })
 
 	return startTray, endTray
 }

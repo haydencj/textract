@@ -6,49 +6,31 @@ import (
 	. "screen2text/app"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"golang.design/x/mainthread"
 )
 
-// func main() {
-// 	mainthread.Init(fn)
-// }
+func main() { mainthread.Init(fn) }
 
-func main() {
+func fn() {
 	InitClipboard()
 
-	fmt.Println("test 1")
+	defer mainthread.Call(func() { glfw.Terminate() })
 
-	var err error
-	// mainthread.Call(func() {
-	// 	err = glfw.Init()
-	// })
+	hotkeyChan := RegisterHotkey()
 
-	err = glfw.Init()
-	if err != nil {
-		panic(err)
-	}
+	go func() {
+		for {
+			select {
+			case <-hotkeyChan:
+				fmt.Println("Hotkey pressed!")
+				StartSelection()
+			}
+		}
+	}()
 
-	win, err := NewWindow()
-	if err != nil {
-		panic(err)
-	}
 	startTray, endTray := StartSystray()
+
 	startTray()
-	// mainthread.Call(func() { startTray() })
-
-	win.Run()
-	fmt.Println("test 2")
-
-	defer Terminate()
-
-	//SwitchUI()
-
-	fmt.Println("test 3")
-	endTray()
-	// window, err := NewWindow()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// // runs every frame
-	// window.Run()
-
+	defer endTray()
+	select {}
 }

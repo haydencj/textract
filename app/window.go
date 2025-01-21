@@ -2,17 +2,12 @@ package app
 
 import (
 	"fmt"
-	"runtime"
 
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tfriedel6/canvas"
 	"github.com/tfriedel6/canvas/backend/goglbackend"
 )
-
-func init() {
-	runtime.LockOSThread()
-}
 
 func NewWindow() (*Win, error) {
 	var (
@@ -21,29 +16,42 @@ func NewWindow() (*Win, error) {
 	)
 
 	fmt.Println("Begin window creation.")
+
+	// Check if GLFW is initialized
+	if err := glfw.Init(); err != nil {
+		return nil, fmt.Errorf("failed to initialize GLFW")
+	}
+
+	fmt.Println("GLFW initialized successfully")
+
 	// initialize state
 	w.state = &State{Sx: 1, Sy: 1}
 
 	// get monitor info
 	monitor := glfw.GetPrimaryMonitor()
-	vidMode := monitor.GetVideoMode()
+	if monitor == nil {
+		return nil, fmt.Errorf("failed to get primary monitor")
+	}
+	fmt.Println("Got primary monitor")
 
-	//mainthread.Call(func() { setWindowHints(vidMode) })
+	vidMode := monitor.GetVideoMode()
+	if vidMode == nil {
+		return nil, fmt.Errorf("failed to get video mode")
+	}
+	fmt.Printf("Got video mode: %dx%d@%dHz\n", vidMode.Width, vidMode.Height, vidMode.RefreshRate)
+
+	// Set window hints before creation
 	setWindowHints(vidMode)
-	// mainthread.Call(func() {
-	// 	w.win, err = glfw.CreateWindow(vidMode.Width, vidMode.Height,
-	// 		"screen2text", nil, nil)
-	// 	if err != nil { // window creation failed
-	// 		return
-	// 	}
-	// })
+	fmt.Println("Window hints set")
+
+	// Try creating window
+	fmt.Printf("Attempting to create window: %dx%d\n", vidMode.Width, vidMode.Height)
 	w.win, err = glfw.CreateWindow(vidMode.Width, vidMode.Height,
 		"screen2text", nil, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create window: %v", err)
 	}
 
-	// mainthread.Call(func() { w.win.SetPos(0, 0) })
 	w.win.SetPos(0, 0)
 	w.win.MakeContextCurrent()
 
@@ -56,7 +64,7 @@ func NewWindow() (*Win, error) {
 	// Set up callbacks
 	w.SetUpCallbacks()
 
-	fmt.Println("New window created.")
+	fmt.Println("Window created successfully")
 	return w, nil
 }
 
@@ -68,7 +76,7 @@ func (w *Win) InitGLBackend() error {
 	}
 
 	// set vsync on, enable multisample (if available) (OPTIONAL???)
-	// glfw.SwapInterval(1)
+	//glfw.SwapInterval(1)
 	gl.Enable(gl.MULTISAMPLE)
 
 	// --- BLENDING ---
@@ -92,6 +100,7 @@ func (w *Win) InitGLBackend() error {
 }
 
 func setWindowHints(vidMode *glfw.VidMode) {
+
 	// for windows fullscreen
 	glfw.WindowHint(glfw.RedBits, vidMode.RedBits)
 	glfw.WindowHint(glfw.GreenBits, vidMode.GreenBits)
