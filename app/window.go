@@ -17,13 +17,6 @@ func NewWindow() (*Win, error) {
 
 	fmt.Println("Begin window creation.")
 
-	// Check if GLFW is initialized
-	if err := glfw.Init(); err != nil {
-		return nil, fmt.Errorf("failed to initialize GLFW")
-	}
-
-	fmt.Println("GLFW initialized successfully")
-
 	// initialize state
 	w.state = &State{Sx: 1, Sy: 1}
 
@@ -76,7 +69,7 @@ func (w *Win) InitGLBackend() error {
 	}
 
 	// set vsync on, enable multisample (if available) (OPTIONAL???)
-	//glfw.SwapInterval(1)
+	glfw.SwapInterval(1)
 	gl.Enable(gl.MULTISAMPLE)
 
 	// --- BLENDING ---

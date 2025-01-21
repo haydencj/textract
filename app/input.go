@@ -23,7 +23,6 @@ func RegisterHotkey() chan struct{} {
 
 	// global keyboard event listener
 	hook.Register(hook.KeyDown, []string{"c", "ctrl", "shift"}, func(e hook.Event) {
-		fmt.Println("event")
 		hotkeyChan <- struct{}{}
 	})
 

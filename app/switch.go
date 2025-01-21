@@ -2,28 +2,13 @@ package app
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/energye/systray"
 	"golang.design/x/mainthread"
 )
 
-func StartSelection() {
-	var (
-		win *Win
-		err error
-	)
-
+func (win *Win) StartSelection() {
 	fmt.Println("Running OpenGL Selection...")
-
-	// Schedule the window creation on the main thread:
-	mainthread.Call(func() {
-		win, err = NewWindow()
-	})
-
-	if err != nil {
-		log.Fatalln("Failed to create OpenGL window:", err)
-	}
 
 	// Run the OpenGL selection
 	mainthread.Call(func() { win.Run() })
