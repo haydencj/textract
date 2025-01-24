@@ -7,6 +7,7 @@ import (
 
 // Run runs the given window and blocks until it is destroyed.
 func (w *Win) Run() {
+	w.win.Show()
 	for !w.win.ShouldClose() {
 
 		w.win.MakeContextCurrent()
@@ -26,10 +27,7 @@ func (w *Win) Run() {
 
 		// swap back and front buffer
 		w.win.SwapBuffers()
-		// mainthread.Call(func() {
-		// 	// This function must be called from the main thread.
-		// 	glfw.PollEvents()
-		// })
+
 		glfw.PollEvents()
 	}
 	// This function must be called from the mainthread.

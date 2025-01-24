@@ -45,6 +45,7 @@ func NewWindow() (*Win, error) {
 		return nil, fmt.Errorf("failed to create window: %v", err)
 	}
 
+	w.win.Hide()
 	w.win.SetPos(0, 0)
 	w.win.MakeContextCurrent()
 

@@ -21,7 +21,7 @@ func InitClipboard() {
 func Copy(s *State) {
 	if s.imageBuffer.Len() != 0 {
 
-		// TODO: Use glfw's clipboard functions
+		// TODO: Use glfw's clipboard functions?
 		//clipboard.Write(clipboard.FmtImage, s.imageBuffer.Bytes())
 		extracted_text, err := Ocr(s)
 		if err != nil {
